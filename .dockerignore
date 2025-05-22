@@ -1,0 +1,28 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+CLAUDE.md
+
+# Development files
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+bin/
+*.log
+
+# Go specific
+*.test
+*.prof
+coverage.txt
+
+# Docker
+Dockerfile
+.dockerignore
