@@ -1,18 +1,22 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type HealthResponse struct {
 	Status string `json:"status"`
 }
 
-func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	
-	response := HealthResponse{Status: "ok"}
-	json.NewEncoder(w).Encode(response)
+// HealthHandler godoc
+// @Summary Health check endpoint
+// @Description Returns the health status of the API
+// @Tags health
+// @Produce json
+// @Success 200 {object} HealthResponse
+// @Router /health [get]
+func HealthHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, HealthResponse{Status: "ok"})
 }

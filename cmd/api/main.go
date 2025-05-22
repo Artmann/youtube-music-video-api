@@ -1,25 +1,32 @@
 package main
 
 import (
-	"log"
-	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"youtube-music-video-api/internal/handlers"
+	_ "youtube-music-video-api/docs"
 )
 
+// @title YouTube Music Video API
+// @version 1.0
+// @description API for searching YouTube music videos
+// @host localhost:9898
+// @BasePath /
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "9898"
 	}
 	
-	mux := http.NewServeMux()
+	r := gin.Default()
 	
-	mux.HandleFunc("/health", handlers.HealthHandler)
+	r.GET("/", handlers.RedirectToSwagger)
+	r.GET("/health", handlers.HealthHandler)
+	r.GET("/search", handlers.SearchHandler)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	
-	log.Printf("Server starting on :%s", port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
-		log.Fatal("Server failed to start:", err)
-	}
+	r.Run(":" + port)
 }

@@ -1,0 +1,74 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for searching YouTube music videos",
+        "title": "YouTube Music Video API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:9898",
+    "basePath": "/",
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "Returns the health status of the API",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check endpoint",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "description": "Returns a list of music video search results",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "search"
+                ],
+                "summary": "Search for music videos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.SearchResult"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.SearchResult": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

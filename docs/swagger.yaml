@@ -1,0 +1,48 @@
+basePath: /
+definitions:
+  handlers.HealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  handlers.SearchResult:
+    properties:
+      id:
+        type: string
+    type: object
+host: localhost:9898
+info:
+  contact: {}
+  description: API for searching YouTube music videos
+  title: YouTube Music Video API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Returns the health status of the API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.HealthResponse'
+      summary: Health check endpoint
+      tags:
+      - health
+  /search:
+    get:
+      description: Returns a list of music video search results
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.SearchResult'
+            type: array
+      summary: Search for music videos
+      tags:
+      - search
+swagger: "2.0"
