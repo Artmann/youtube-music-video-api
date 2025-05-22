@@ -40,6 +40,11 @@ func (c *LRUCache) Put(key, value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	
+	// Don't store anything if capacity is 0
+	if c.capacity <= 0 {
+		return
+	}
+	
 	if elem, exists := c.cache[key]; exists {
 		c.list.MoveToFront(elem)
 		elem.Value.(*entry).value = value
