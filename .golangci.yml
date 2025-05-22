@@ -1,0 +1,65 @@
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - gocritic
+    - gosec
+    - unconvert
+    - unparam
+    - whitespace
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  govet:
+    check-shadowing: true
+  
+  gosec:
+    excludes:
+      - G402 # TLS MinVersion - not applicable for HTTP client
+  
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+    disabled-checks:
+      - commentFormatting
+      - whyNoLint
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gosec
+        - unparam
+    
+    # Ignore long lines in generated files
+    - path: docs/
+      linters:
+        - lll
+
+  # Show only new issues for PRs
+  new-from-rev: main
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

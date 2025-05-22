@@ -1,5 +1,7 @@
 # YouTube Music Video API
 
+[![Tests](https://github.com/artmann/youtube-music-video-api/workflows/Tests/badge.svg)](https://github.com/artmann/youtube-music-video-api/actions)
+
 A Go API for searching YouTube music videos, built with Gin and OpenAPI documentation.
 
 ## Features
@@ -86,6 +88,18 @@ The test suite includes:
 - **Edge Cases**: Error handling and parameter validation
 
 Note: Integration tests may be slow as they make real HTTP requests to YouTube. Use `-short` flag to skip them during development.
+
+## Continuous Integration
+
+The project uses GitHub Actions for CI/CD with the following checks:
+
+- **Tests**: Runs unit tests with race detection and coverage reporting
+- **Integration Tests**: Runs full API tests with YouTube integration
+- **Linting**: Code quality checks with golangci-lint
+- **Build**: Verifies Go build and Docker image creation
+- **Coverage**: Enforces minimum 80% test coverage
+
+All pull requests must pass these checks before merging.
 
 ## API Endpoints
 

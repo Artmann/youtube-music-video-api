@@ -35,6 +35,9 @@ go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/api/main.go
 # Docker commands
 docker build -t youtube-music-video-api .
 docker run -p 9898:9898 youtube-music-video-api
+
+# Linting
+golangci-lint run
 ```
 
 ## Architecture
@@ -71,6 +74,15 @@ The codebase includes comprehensive test coverage:
   - Various response scenarios
 
 Use `go test -short ./...` during development to skip slow integration tests.
+
+## CI/CD Pipeline
+
+GitHub Actions workflow (`.github/workflows/test.yml`) runs on all PRs and includes:
+- Unit and integration tests with race detection
+- Code coverage reporting (80% minimum threshold)
+- golangci-lint for code quality
+- Docker build verification
+- Artifact upload for coverage reports
 
 ## Key Endpoints
 
