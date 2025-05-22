@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -11,16 +12,26 @@ import (
 
 type YouTubeService struct {
 	client *http.Client
+	cache  *LRUCache
 }
 
 func NewYouTubeService() *YouTubeService {
 	return &YouTubeService{
 		client: &http.Client{},
+		cache:  NewLRUCache(5000), // Cache up to 5000 search results
 	}
 }
 
 func (ys *YouTubeService) SearchVideos(title string, artists []string) ([]string, error) {
 	query := ys.buildSearchQuery(title, artists)
+	cacheKey := ys.buildCacheKey(title, artists)
+	
+	// Check cache first
+	if videoID, found := ys.cache.Get(cacheKey); found {
+		log.Printf("Cache HIT for key: %s", cacheKey)
+		return []string{videoID}, nil
+	}
+	log.Printf("Cache MISS for key: %s", cacheKey)
 	
 	searchURL := fmt.Sprintf("https://www.youtube.com/results?search_query=%s", url.QueryEscape(query))
 	
@@ -51,10 +62,22 @@ func (ys *YouTubeService) SearchVideos(title string, artists []string) ([]string
 		return nil, fmt.Errorf("failed to extract video IDs: %w", err)
 	}
 	
+	// Cache the first video ID if found
+	if len(videoIDs) > 0 {
+		log.Printf("Caching video ID %s for key: %s", videoIDs[0], cacheKey)
+		ys.cache.Put(cacheKey, videoIDs[0])
+	}
+	
 	return videoIDs, nil
 }
 
 func (ys *YouTubeService) buildSearchQuery(title string, artists []string) string {
+	parts := []string{title}
+	parts = append(parts, artists...)
+	return strings.Join(parts, " ")
+}
+
+func (ys *YouTubeService) buildCacheKey(title string, artists []string) string {
 	parts := []string{title}
 	parts = append(parts, artists...)
 	return strings.Join(parts, " ")

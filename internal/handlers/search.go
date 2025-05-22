@@ -34,8 +34,9 @@ type SearchResponse struct {
 // @Success 200 {object} SearchResponse
 // @Failure 400 {object} map[string]string
 // @Router /search [get]
+var youtubeService = services.NewYouTubeService()
+
 func SearchHandler(c *gin.Context) {
-	youtubeService := services.NewYouTubeService()
 	title := strings.TrimSpace(c.Query("title"))
 	artistsParam := strings.TrimSpace(c.Query("artists"))
 	
