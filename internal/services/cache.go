@@ -26,8 +26,8 @@ func NewLRUCache(capacity int) *LRUCache {
 }
 
 func (c *LRUCache) Get(key string) (string, bool) {
-	c.mutex.RLock()
-	defer c.mutex.RUnlock()
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
 	
 	if elem, exists := c.cache[key]; exists {
 		c.list.MoveToFront(elem)
