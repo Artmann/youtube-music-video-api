@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"youtube-music-video-api/internal/services"
 )
 
 type SearchInput struct {
@@ -13,12 +15,13 @@ type SearchInput struct {
 }
 
 type SearchVideo struct {
-	ID string `json:"id"`
+	ID  string `json:"id"`
+	URL string `json:"url"`
 }
 
 type SearchResponse struct {
-	Input  SearchInput   `json:"input"`
-	Videos []SearchVideo `json:"videos"`
+	Input SearchInput  `json:"input"`
+	Video *SearchVideo `json:"video"`
 }
 
 // SearchHandler godoc
@@ -32,6 +35,7 @@ type SearchResponse struct {
 // @Failure 400 {object} map[string]string
 // @Router /search [get]
 func SearchHandler(c *gin.Context) {
+	youtubeService := services.NewYouTubeService()
 	title := strings.TrimSpace(c.Query("title"))
 	artistsParam := strings.TrimSpace(c.Query("artists"))
 	
@@ -51,14 +55,27 @@ func SearchHandler(c *gin.Context) {
 		}
 	}
 	
+	videoIDs, err := youtubeService.SearchVideos(title, artists)
+	if err != nil {
+		log.Printf("Error searching YouTube for title '%s' with artists %v: %v", title, artists, err)
+		c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to search YouTube"})
+		return
+	}
+	
+	var video *SearchVideo
+	if len(videoIDs) > 0 {
+		video = &SearchVideo{
+			ID:  videoIDs[0],
+			URL: "https://www.youtube.com/watch?v=" + videoIDs[0],
+		}
+	}
+	
 	response := SearchResponse{
 		Input: SearchInput{
 			Title:   title,
 			Artists: artists,
 		},
-		Videos: []SearchVideo{
-			{ID: "123"},
-		},
+		Video: video,
 	}
 	c.JSON(http.StatusOK, response)
 }
