@@ -45,13 +45,34 @@ const docTemplate = `{
                     "search"
                 ],
                 "summary": "Search for music videos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Title to search for",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Artist name or comma-separated list of artists",
+                        "name": "artists",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/handlers.SearchResult"
+                            "$ref": "#/definitions/handlers.SearchResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
@@ -68,10 +89,38 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.SearchResult": {
+        "handlers.SearchInput": {
+            "type": "object",
+            "properties": {
+                "artists": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.SearchResponse": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "$ref": "#/definitions/handlers.SearchInput"
+                },
+                "video": {
+                    "$ref": "#/definitions/handlers.SearchVideo"
+                }
+            }
+        },
+        "handlers.SearchVideo": {
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }

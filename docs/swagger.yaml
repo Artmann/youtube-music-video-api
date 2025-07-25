@@ -5,9 +5,27 @@ definitions:
       status:
         type: string
     type: object
-  handlers.SearchResult:
+  handlers.SearchInput:
+    properties:
+      artists:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+  handlers.SearchResponse:
+    properties:
+      input:
+        $ref: '#/definitions/handlers.SearchInput'
+      video:
+        $ref: '#/definitions/handlers.SearchVideo'
+    type: object
+  handlers.SearchVideo:
     properties:
       id:
+        type: string
+      url:
         type: string
     type: object
 host: localhost:9898
@@ -33,15 +51,29 @@ paths:
   /search:
     get:
       description: Returns a list of music video search results
+      parameters:
+      - description: Title to search for
+        in: query
+        name: title
+        required: true
+        type: string
+      - description: Artist name or comma-separated list of artists
+        in: query
+        name: artists
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/handlers.SearchResult'
-            type: array
+            $ref: '#/definitions/handlers.SearchResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Search for music videos
       tags:
       - search

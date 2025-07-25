@@ -24,6 +24,8 @@ type SearchResponse struct {
 	Video *SearchVideo `json:"video"`
 }
 
+var youtubeService = services.NewYouTubeService()
+
 // SearchHandler godoc
 // @Summary Search for music videos
 // @Description Returns a list of music video search results
@@ -34,8 +36,6 @@ type SearchResponse struct {
 // @Success 200 {object} SearchResponse
 // @Failure 400 {object} map[string]string
 // @Router /search [get]
-var youtubeService = services.NewYouTubeService()
-
 func SearchHandler(c *gin.Context) {
 	title := strings.TrimSpace(c.Query("title"))
 	artistsParam := strings.TrimSpace(c.Query("artists"))
