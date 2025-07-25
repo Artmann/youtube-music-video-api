@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -22,6 +23,12 @@ func main() {
 	}
 	
 	r := gin.Default()
+	
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:    []string{"*"},
+	}))
 	
 	r.GET("/", handlers.RedirectToSwagger)
 	r.GET("/health", handlers.HealthHandler)
